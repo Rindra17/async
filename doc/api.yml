@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: Async Image Processing API
+  version: 1.0.0
+  description: API for uploading images for asynchronous processing and receiving the result via email.
+paths:
+  /upload:
+    post:
+      summary: Upload an image for processing
+      description: Uploads an image associated with an email address. The image is processed asynchronously and the result is sent to the provided email.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImageUploadRequest'
+      responses:
+        '200':
+          description: Image uploaded successfully.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UploadSuccessResponse'
+        '400':
+          description: Invalid input (e.g., missing parameters).
+        '500':
+          description: Internal server error.
+components:
+  schemas:
+    ImageUploadRequest:
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+        image:
+          $ref: '#/components/schemas/ImageFile'
+      required:
+        - email
+        - image
+    Email:
+      type: string
+      format: email
+      description: The email address where the processed image will be sent.
+    ImageFile:
+      type: string
+      format: binary
+      description: The image file to be processed.
+    UploadSuccessResponse:
+      type: string
+      example: Image uploaded successfully. You will receive the processed image via email.
