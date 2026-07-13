@@ -2,17 +2,16 @@ package hei.school.async.service;
 
 import hei.school.async.endpoint.event.EventProducer;
 import hei.school.async.endpoint.event.model.ProcessImageEvent;
+import hei.school.async.endpoint.rest.controller.validator.ImageValidator;
 import hei.school.async.file.bucket.BucketComponent;
 import hei.school.async.repository.UploadRepository;
 import hei.school.async.repository.model.JUpload;
-import hei.school.async.endpoint.rest.controller.validator.ImageValidator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,28 +38,29 @@ public class ImageUploadService {
 
     bucketComponent.upload(tempFile, bucketKey);
 
-    var uploadMetadata = JUpload.builder()
-        .id(UUID.randomUUID())
-        .fileName(bucketKey)
-        .email(email)
-        .createdAt(java.time.Instant.now())
-        .build();
+    var uploadMetadata =
+        JUpload.builder()
+            .id(UUID.randomUUID())
+            .fileName(bucketKey)
+            .email(email)
+            .createdAt(java.time.Instant.now())
+            .build();
     uploadRepository.save(uploadMetadata);
 
-    var event = ProcessImageEvent.builder()
-        .imageId(uploadMetadata.getId())
-        .bucketKey(bucketKey)
-        .email(email)
-        .extension(extension)
-        .build();
+    var event =
+        ProcessImageEvent.builder()
+            .imageId(uploadMetadata.getId())
+            .bucketKey(bucketKey)
+            .email(email)
+            .extension(extension)
+            .build();
     eventProducer.accept(List.of(event));
 
     tempFile.delete();
   }
 
   private String getFileExtension(String fileName) {
-    if (fileName == null)
-      return "jpg";
+    if (fileName == null) return "jpg";
     int lastDotIndex = fileName.lastIndexOf('.');
     return (lastDotIndex == -1) ? "jpg" : fileName.substring(lastDotIndex + 1);
   }

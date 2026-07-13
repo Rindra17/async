@@ -16,6 +16,7 @@ public class ImageController {
   @PostMapping("/upload")
   public ResponseEntity<?> upload(@RequestParam String email, @RequestParam MultipartFile image) {
     uploadService.uploadImage(email, image);
-    return ResponseEntity.ok("Image uploaded successfully. You will receive the processed image via email.");
+    return ResponseEntity.ok(
+        "Image uploaded successfully. You will receive the processed image via email.");
   }
 }

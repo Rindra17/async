@@ -13,8 +13,8 @@ public class ImageValidator {
     }
 
     String contentType = file.getContentType();
-    if (contentType == null ||
-        (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+    if (contentType == null
+        || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
       throw new AppException("Only .jpeg and .png images are accepted");
     }
   }

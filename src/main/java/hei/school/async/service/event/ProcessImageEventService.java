@@ -27,7 +27,8 @@ public class ProcessImageEventService implements Consumer<ProcessImageEvent> {
     File originalFile = bucketComponent.download(event.getBucketKey());
 
     try {
-      File bwFile = imageProcessingService.convertToBlackAndWhite(originalFile, event.getExtension());
+      File bwFile =
+          imageProcessingService.convertToBlackAndWhite(originalFile, event.getExtension());
 
       String bwBucketKey = "processed/" + event.getImageId() + "_bw." + event.getExtension();
       bucketComponent.upload(bwFile, bwBucketKey);
@@ -35,13 +36,18 @@ public class ProcessImageEventService implements Consumer<ProcessImageEvent> {
       String presignedUrl = bucketComponent.presign(bwBucketKey, Duration.ofHours(1)).toString();
 
       InternetAddress recipient = new InternetAddress(event.getEmail());
-       var email = new Email(
-           recipient,
-           List.of(),
-           List.of(),
-           "Upload Successful",
-           "Hello,\n\nYour image has been processed successfully. You can download your greyscale image using the following link:\n\n" + presignedUrl + "\n\nBest regards,\nYour Image Service",
-           List.of());
+      var email =
+          new Email(
+              recipient,
+              List.of(),
+              List.of(),
+              "Upload Successful",
+              "Hello,\n\n"
+                  + "Your image has been processed successfully. You can download your greyscale"
+                  + " image using the following link:\n\n"
+                  + presignedUrl
+                  + "\n\nBest regards,\nYour Image Service",
+              List.of());
       mailer.accept(email);
 
       bwFile.delete();

@@ -12,25 +12,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class ImageProcessingService {
 
-    @SneakyThrows
-    public File convertToBlackAndWhite(File inputFile, String format) {
-        BufferedImage sourceImage = ImageIO.read(inputFile);
-        if (sourceImage == null) {
-            throw new IOException("Could not read image file: " + inputFile.getName());
-        }
-
-        BufferedImage resultImage = new BufferedImage(
-            sourceImage.getWidth(), 
-            sourceImage.getHeight(), 
-            BufferedImage.TYPE_BYTE_GRAY
-        );
-
-        ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-        op.filter(sourceImage, resultImage);
-
-        File outputFile = File.createTempFile("bw-", "." + format);
-        ImageIO.write(resultImage, format, outputFile);
-        
-        return outputFile;
+  @SneakyThrows
+  public File convertToBlackAndWhite(File inputFile, String format) {
+    BufferedImage sourceImage = ImageIO.read(inputFile);
+    if (sourceImage == null) {
+      throw new IOException("Could not read image file: " + inputFile.getName());
     }
+
+    BufferedImage resultImage =
+        new BufferedImage(
+            sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+
+    ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+    op.filter(sourceImage, resultImage);
+
+    File outputFile = File.createTempFile("bw-", "." + format);
+    ImageIO.write(resultImage, format, outputFile);
+
+    return outputFile;
+  }
 }

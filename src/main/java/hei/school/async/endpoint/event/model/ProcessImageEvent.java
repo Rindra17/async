@@ -1,13 +1,13 @@
 package hei.school.async.endpoint.event.model;
 
 import java.time.Duration;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,18 +16,18 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class ProcessImageEvent extends PojaEvent {
-    private UUID imageId;
-    private String bucketKey;
-    private String email;
-    private String extension;
+  private UUID imageId;
+  private String bucketKey;
+  private String email;
+  private String extension;
 
-    @Override
-    public Duration maxConsumerDuration() {
-        return Duration.ofSeconds(60);
-    }
+  @Override
+  public Duration maxConsumerDuration() {
+    return Duration.ofSeconds(60);
+  }
 
-    @Override
-    public Duration maxConsumerBackoffBetweenRetries() {
-        return Duration.ofSeconds(30);
-    }
+  @Override
+  public Duration maxConsumerBackoffBetweenRetries() {
+    return Duration.ofSeconds(30);
+  }
 }
