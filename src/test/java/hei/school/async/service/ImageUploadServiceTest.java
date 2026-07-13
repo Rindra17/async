@@ -1,5 +1,10 @@
 package hei.school.async.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
 import hei.school.async.endpoint.event.EventProducer;
 import hei.school.async.endpoint.event.model.ProcessImageEvent;
 import hei.school.async.endpoint.rest.controller.validator.ImageValidator;
@@ -14,36 +19,23 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
 class ImageUploadServiceTest {
 
-  @Mock
-  private UploadRepository uploadRepository;
-  @Mock
-  private BucketComponent bucketComponent;
-  @Mock
-  private EventProducer<ProcessImageEvent> eventProducer;
-  @Mock
-  private ImageValidator imageValidator;
+  @Mock private UploadRepository uploadRepository;
+  @Mock private BucketComponent bucketComponent;
+  @Mock private EventProducer<ProcessImageEvent> eventProducer;
+  @Mock private ImageValidator imageValidator;
 
-  @InjectMocks
-  private ImageUploadService imageUploadService;
+  @InjectMocks private ImageUploadService imageUploadService;
 
   private MockMultipartFile mockFile;
   private final String email = "test@example.com";
 
   @BeforeEach
   void setUp() {
-    mockFile = new MockMultipartFile(
-        "image",
-        "test.jpg",
-        "image/jpeg",
-        "test image content".getBytes());
+    mockFile =
+        new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
   }
 
   @Test
@@ -67,12 +59,15 @@ class ImageUploadServiceTest {
   void uploadImage_InvalidImage_ThrowsException() {
     // Given
     doThrow(new IllegalArgumentException("Invalid format"))
-        .when(imageValidator).validateImage(any());
+        .when(imageValidator)
+        .validateImage(any());
 
     // When & Then
-    assertThrows(IllegalArgumentException.class, () -> {
-      imageUploadService.uploadImage(email, mockFile);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          imageUploadService.uploadImage(email, mockFile);
+        });
 
     verify(uploadRepository, never()).save(any());
   }
